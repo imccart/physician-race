@@ -1,1 +1,3 @@
-# physician-race
+# Physician Race
+
+This repo contains the code for several different race predictions for physicians. The main list of physicians comes from the [National Provider Identifier (NPI) dataset](https://www.cms.gov/Research-Statistics-Data-and-Systems/Downloadable-Public-Use-Files/Provider-Of-Services/index.html) from the Centers for Medicare and Medicaid Services (CMS). The data is from 2018 and contains information on over 4 million physicians and other healthcare providers. The data is available for download [here](https://www.cms.gov/Research-Statistics-Data-and-Systems/Downloadable-Public-Use-Files/Provider-of-Services/Provider_of_Services.zip).
