@@ -7,8 +7,14 @@ This repo contains the code for different race predictions for physicians, organ
 We identify physicians from two sources:
 - The [National Provider Identifier (NPI) dataset](https://www.cms.gov/Research-Statistics-Data-and-Systems/Downloadable-Public-Use-Files/Provider-Of-Services/index.html) from the Centers for Medicare and Medicaid Services (CMS). The data is from 2018 and contains information on over 4 million physicians and other healthcare providers. The data is available for download [here](https://www.cms.gov/Research-Statistics-Data-and-Systems/Downloadable-Public-Use-Files/Provider-of-Services/Provider_of_Services.zip). 
 - We also use the [MDPPAS](https://resdac.org/cms-data/files/md-ppas) dataset from CMS, which is restricted access.
+
+We use the following files to capture additional geographic information:
 - `ZIP_COUNTY_122010.xlsx` is the zip code county crosswalk from HUD. We use the crosswalk for 2010 since the Census data used to predict race in the wru package (see below) is from 2010. 
 - `stfips_crosswalk.csv` is a state name to FIPS crosswalk sourced from the Bureau of Labor Statistics, available [here](https://www.bls.gov/respondents/mwr/electronic-data-interchange/appendix-d-usps-state-abbreviations-and-fips-codes.htm)
+
+Finally, we use scraped physician image data from [Zocdoc](https://www.zocdoc.com/). These data come from two sources:
+- Our own algorithm to scrape images and physician profiles as of August 15, 2024. HUGE thank you to [Elizabeth McAvoy](https://www.linkedin.com/in/elizabeth-m-mcavoy/) for her incredible research support on this project.
+- Images and profiles for primary care physicians scraped for a separate project, generously provided to us by [Aaron Kaye](https://sites.google.com/view/aaronkaye/home). Thank you Aaron!
 
 
 ## Code
@@ -19,6 +25,8 @@ The code is organized as follows:
 - `wru-nppes.R` predicts race based on name and geolocation using the NPPES data
 - `wru-mdppas.R` predicts race based on name and geolocation using the MDPPAS data
 - `clean-FL-voter.R` and `clean-TX-license.R` clean the FL voter files and TX license data, respectively. These are the "validation sets" that contain actual race. The accuracy of the name predictions are assesed by `FL-accuracy.R` and `TX-accuracy.R`, respectively. 
+- `zocdoc-prediction-AK.py` predicts physician race using the deepface package based on data from Aaron Kaye (see above).
+- `zocdoc-prediction-IU.py` predicts physician race using the deepface package based on data we scraped for this project.
 
 -----
 
