@@ -12,7 +12,7 @@
 if (!require("pacman")) renv::install('pacman')
 pacman::p_load(tidyverse, ggplot2, dplyr, lubridate, stargazer, knitr, kableExtra,
                fixest, modelsummary, broom, tidymodels, data.table, httr, jsonlite, 
-               janitor, wru, readxl)
+               janitor, wru, readxl, stringr)
 source('data-code/api_keys.R')
 
 # Import initial data -----------------------------------------------------
@@ -70,8 +70,18 @@ source('data-code/accuracy-TX.R')
 
 # Zocdoc predictions -----------------------------------------------------------
 
-# Image predictions are performed using a Python script
-# TODO: Source Python file using reticulate 
+profile.dat <- read_xlsx(path="data/input/zocdoc/from-iu/full-data/zocdoc_profiles_202408_full.xlsx") %>%
+  mutate(zocdoc_id=str_extract(zocdoc_link, "[^-]+$")) %>%
+  select(name, address, npi, gender, ethnicity, state, city, zip5, zocdoc_id)
+zocdoc.race <- read_csv(file="data/output/zocdoc_extract_iu.csv")
+
+zocdoc.data <- zocdoc.race %>% select(-name) %>%
+  left_join(profile.dat %>% mutate(zocdoc_id=as.numeric(zocdoc_id)), by="zocdoc_id") %>%
+  select(zocdoc_id, npi, name, degree, gender, ethnicity, 
+         dominant_race, asian, indian, black, white, middle_eastern, latino_hispanic,
+         address, state, city, zip5)
+
+write_tsv(zocdoc.data, 'data/output/final-zocdoc.csv')
 
 # Clean race data ---------------------------------------------------------
 
