@@ -23,7 +23,7 @@ nppes.names <- nppes.data %>% select(lastname=provider_last_name_legal_name, fir
   filter(lastname!="" & !is.na(lastname)) %>%
   distinct(lastname, firstname)
 
-write_tsv(nppes.names, 'data/output/unique-nppes-names.csv')
+write_csv(nppes.names, 'data/output/unique-nppes-names.csv')
 
 ## MDPPAS data 
 filelist <- c('data/input/MDPPAS/PhysicianData_2013.csv', 
@@ -41,7 +41,7 @@ mdppas.names <- mdppas %>% select(lastname=name_last, firstname=name_first) %>%
   filter(lastname!="" & !is.na(lastname)) %>%
   distinct(lastname, firstname)
 
-write_tsv(mdppas.names, 'data/output/unique-mdppas-names.csv')
+write_csv(mdppas.names, 'data/output/unique-mdppas-names.csv')
 
 ## zip-county crosswalk (HUD)
 zc_crosswalk <- read_excel("data/input/ZIP_COUNTY_122010.xlsx")
@@ -81,11 +81,11 @@ zocdoc.data <- zocdoc.race %>% select(-name) %>%
          dominant_race, asian, indian, black, white, middle_eastern, latino_hispanic,
          address, state, city, zip5)
 
-write_tsv(zocdoc.data, 'data/output/final-zocdoc.csv')
+write_csv(zocdoc.data, 'data/output/final-zocdoc.csv')
 
 # Clean race data ---------------------------------------------------------
 
-## from NPPES
+## from NPPES and NAMEPRISM
 npi.data <- nppes.data %>% 
   select(npi, lastname=provider_last_name_legal_name, firstname=provider_first_name)
 
@@ -109,10 +109,49 @@ race.dat <- read_csv(file="data/output/nameprism-nppes.csv",
 npi.race <- npi.data %>% filter(lastname!="") %>%
   left_join(race.dat, by=c("lastname","firstname"))
 
-write_tsv(npi.race, 'data/output/final-nppes-nameprism.csv')
+write_csv(npi.race, 'data/output/final-nppes-nameprism.csv')
 
 
-## From MDPPAS
+## from NPPES and WRU
+npi.data <- nppes.data %>% 
+  select(npi, lastname=provider_last_name_legal_name, firstname=provider_first_name)
+
+race.dat <- read_csv(file="data/output/wru-nppes.csv") %>%
+  select(lastname=surname, firstname=first, zip, county, state, white=white_name, 
+         black=black_name, hispanic=hisp_name, asian=asian_name, other=other_name) %>%
+  group_by(lastname, firstname) %>% 
+  mutate(case_obs=n()) %>%
+  filter(case_obs==1) %>%
+  select(-case_obs) %>%
+  ungroup()
+
+npi.race <- npi.data %>% filter(lastname!="") %>%
+  left_join(race.dat, by=c("lastname","firstname"))
+
+write_csv(npi.race, 'data/output/final-nppes-wru.csv')
+
+## from NPPES and WRU with GEO
+npi.data <- nppes.data %>% 
+  select(npi, lastname=provider_last_name_legal_name, firstname=provider_first_name,
+         state=provider_business_practice_location_address_state_name,
+         zip=provider_business_practice_location_address_postal_code)
+
+race.dat <- read_csv(file="data/output/wru-nppes.csv") %>%
+  select(lastname=surname, firstname=first, zip, county, state, white=white_namegeo, 
+         black=black_namegeo, hispanic=hisp_namegeo, asian=asian_namegeo, other=other_namegeo) %>%
+  group_by(lastname, firstname, zip, state) %>% 
+  mutate(case_obs=n()) %>%
+  filter(case_obs==1) %>%
+  select(-case_obs) %>%
+  ungroup()
+
+npi.race <- npi.data %>% filter(lastname!="") %>%
+  left_join(race.dat, by=c("lastname","firstname","zip","state"))
+
+write_csv(npi.race, 'data/output/final-nppes-wrugeo.csv')
+
+
+## From MDPPAS and NAMEPRISM
 npi.data <- mdppas %>% 
   select(npi, lastname=name_last, firstname=name_first)
 
@@ -137,7 +176,46 @@ race.dat <- read_csv(file="data/output/nameprism-mdppas.csv",
 npi.race <- npi.data %>% filter(lastname!="") %>%
   left_join(race.dat, by=c("lastname","firstname"))
 
-write_tsv(npi.race, 'data/output/final-mdppas-nameprism.csv')
+write_csv(npi.race, 'data/output/final-mdppas-nameprism.csv')
+
+
+## From MDPPAS and WRU
+npi.data <- mdppas %>% 
+  select(npi, lastname=name_last, firstname=name_first)
+
+race.dat <- read_csv(file="data/output/wru-mdppas.csv") %>%
+  select(lastname=surname, firstname=first, zip, county, state, white=white_name, 
+         black=black_name, hispanic=hisp_name, asian=asian_name, other=other_name) %>%
+  group_by(lastname, firstname) %>% 
+  mutate(case_obs=n()) %>%
+  filter(case_obs==1) %>%
+  select(-case_obs) %>%
+  ungroup()
+
+npi.race <- npi.data %>% filter(lastname!="") %>%
+  left_join(race.dat, by=c("lastname","firstname"))
+
+write_csv(npi.race, 'data/output/final-mdppas-wru.csv')
+
+
+## From MDPPAS and WRU with GEO
+npi.data <- mdppas %>% 
+  select(npi, lastname=name_last, firstname=name_first, zip=phy_zip_pos1)
+
+race.dat <- read_csv(file="data/output/wru-mdppas.csv") %>%
+  select(lastname=surname, firstname=first, zip, county, state, white=white_namegeo, 
+         black=black_namegeo, hispanic=hisp_namegeo, asian=asian_namegeo, other=other_namegeo) %>%
+  mutate(zip=as.numeric(zip)) %>%
+  group_by(lastname, firstname, zip) %>% 
+  mutate(case_obs=n()) %>%
+  filter(case_obs==1) %>%
+  select(-case_obs) %>%
+  ungroup()
+
+npi.race <- npi.data %>% filter(lastname!="") %>%
+  left_join(race.dat, by=c("lastname","firstname","zip"))
+
+write_csv(npi.race, 'data/output/final-mdppas-wrugeo.csv')
 
 
 # Summary -----------------------------------------------------------------
