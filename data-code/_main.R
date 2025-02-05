@@ -83,6 +83,8 @@ zocdoc.data <- zocdoc.race %>% select(-name) %>%
 
 write_csv(zocdoc.data, 'data/output/final-zocdoc.csv')
 
+test <- read_csv('data/output/final-zocdoc.csv')
+
 # Clean race data ---------------------------------------------------------
 
 ## from NPPES and NAMEPRISM
