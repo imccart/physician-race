@@ -83,7 +83,15 @@ zocdoc.data <- zocdoc.race %>% select(-name) %>%
 
 write_csv(zocdoc.data, 'data/output/final-zocdoc.csv')
 
-test <- read_csv('data/output/final-zocdoc.csv')
+
+profile.links <- read_xlsx(path="data/input/zocdoc/from-iu/full-data/zocdoc_profiles_202408_full.xlsx") %>%
+  mutate(zocdoc_id=str_extract(zocdoc_link, "[^-]+$")) %>%
+  select(name, npi, zocdoc_id, zocdoc_link)
+
+zocdoc.errors <- read_csv(file="data/output/unreadable_images_iu.csv") %>%
+  left_join(profile.links %>% mutate(zocdoc_id=as.numeric(zocdoc_id)) %>% select(-name), by="zocdoc_id")
+
+write_csv(zocdoc.errors, 'data/output/zocdoc-errors.csv')
 
 # Clean race data ---------------------------------------------------------
 
