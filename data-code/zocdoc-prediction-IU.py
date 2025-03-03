@@ -6,8 +6,8 @@ import os
 from os import listdir
 import string
 
-folder_dir = "./data/input/zocdoc/from-iu/full-data/Profile Pictures/"
-output_csv = "./data/output/zocdoc_extract_iu.csv"
+folder_dir = "./data/input/zocdoc/from-iu/supplement-202502/Profile Pictures/"
+output_csv = "./data/output/zocdoc_extract_iu_supplement.csv"
 
 # Define DataFrame columns
 columns = ["zocdoc_id", "degree", "name", "dominant_race", "asian", 
