@@ -8,9 +8,6 @@ full.ranger <- pred.ranger %>% filter(rf_pred_model==1)
 name.ranger <- pred.ranger %>% filter(rf_pred_model %in% c(2,3,4))
 
 
-## source('data-code/accuracy-FL.R')
-## source('data-code/accuracy-TX.R')
-
 # confusion matrix -------------------------------------------------------------
 
 conf.full <- confusionMatrix(factor(full.ranger$rf_pred_race), factor(full.ranger$true_race))

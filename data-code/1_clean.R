@@ -6,7 +6,9 @@ profile.dat <- read_xlsx(path="data/input/zocdoc/from-iu/full-data/zocdoc_profil
 
 zocdoc.race1 <- read_csv(file="data/output/zocdoc_extract_iu.csv")
 zocdoc.race2 <- read_csv(file="data/output/zocdoc_extract_iu_supplement.csv")
+## zocdoc.race3 <- read_csv(file="data/output/zocdoc_extract_ak.csv")
 zocdoc.race <- rbind(zocdoc.race1 %>% filter(dominant_race!="picture does not contain a face"), zocdoc.race2) 
+
 
 zocdoc.data <- zocdoc.race %>% select(-name) %>%
   left_join(profile.dat %>% mutate(zocdoc_id=as.numeric(zocdoc_id)), by="zocdoc_id") %>%
