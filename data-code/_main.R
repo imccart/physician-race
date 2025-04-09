@@ -1,10 +1,10 @@
 
 # Meta --------------------------------------------------------------------
 
-## Title:         Physician Race Concordance and Referrals
-## Author:        Shirley Cai & Ian McCarthy
+## Title:         Physician Race
+## Author:        Ian McCarthy, Shirley Cai, and Jillian Dickens
 ## Date Created:  9/9/2021
-## Date Edited:   6/3/2024
+## Date Edited:   4/8/2025
 ## Description:   This file calls all analysis scripts in the relevant order
 
 
@@ -12,7 +12,7 @@
 if (!require("pacman")) renv::install('pacman')
 pacman::p_load(tidyverse, ggplot2, dplyr, lubridate, stargazer, knitr, kableExtra,
                fixest, modelsummary, broom, tidymodels, data.table, httr, jsonlite, 
-               janitor, wru, readxl, stringr)
+               janitor, wru, readxl, stringr, ranger, caret)
 source('data-code/api_keys.R')
 
 # Import initial data -----------------------------------------------------

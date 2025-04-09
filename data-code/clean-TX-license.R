@@ -13,11 +13,11 @@ pacman::p_load(tidyverse, haven)
 
 # Import data ------------------------------------------------------------------
 
-df_2021 <- read_delim("data/input/texas/202108PHYACTD.txt",
+df_2021 <- read_delim("data/input/texas/IU-project-folder/4Data/Rawdata/202108PHYACTD.txt",
                       trim_ws = TRUE, col_types = cols(.default = col_character()))
-df_2023 <- read_delim("data/input/texas/202308PHYALLD.txt", 
+df_2023 <- read_delim("data/input/texas/IU-project-folder/4Data/Rawdata/202308PHYALLD.txt", 
                       col_names = FALSE, trim_ws = TRUE, col_types = cols(.default = col_character()))
-statelic <- read_dta("data/input/texas/statelic.dta")
+statelic <- read_dta("data/input/texas/IU-project-folder/4Data/Rawdata/statelic.dta")
 
 colnames(df_2021) <- tolower(colnames(df_2021))
 colnames(df_2023) <- colnames(df_2021)

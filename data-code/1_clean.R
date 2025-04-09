@@ -21,7 +21,7 @@ zocdoc.data <- zocdoc.race %>% select(-name) %>%
       black == pmax(other, asian, black, white, hispanic) ~ "black",
       white == pmax(other, asian, black, white, hispanic) ~ "white",
       hispanic == pmax(other, asian, black, white, hispanic) ~ "hispanic",
-      TRUE ~ NA_real_
+      TRUE ~ NA_character_
     ),
     pred_race = case_when(
       max_race == "other"    ~ other,
@@ -62,14 +62,15 @@ race.dat <- read_csv(file="data/output/nameprism-nppes.csv",
   select(lastname, firstname, two_race, hispanic, api, black, asian, white) %>%
   mutate(across(c("two_race","hispanic","api","black","asian","white"), as.numeric)) %>%
   group_by(lastname, firstname) %>% 
-  mutate(case_obs=n()) %>%
+  mutate(case_obs=row_number()) %>%
   filter(case_obs==1) %>%
   select(-case_obs) %>%
   ungroup()
 
 npi.race <- npi.data %>% filter(lastname!="") %>%
   left_join(race.dat, by=c("lastname","firstname")) %>%
-  mutate(other=api+two_race) %>%
+  mutate(other=two_race,
+         asian=asian+api) %>%
   select(npi, lastname, firstname, hispanic, black, asian, white, other) %>%
   mutate(
     max_race = case_when(
@@ -78,7 +79,7 @@ npi.race <- npi.data %>% filter(lastname!="") %>%
       black == pmax(other, asian, black, white, hispanic) ~ "black",
       white == pmax(other, asian, black, white, hispanic) ~ "white",
       hispanic == pmax(other, asian, black, white, hispanic) ~ "hispanic",
-      TRUE ~ NA_real_      
+      TRUE ~ NA_character_    
     ),
     pred_race = case_when(
       max_race == "other"    ~ other,
@@ -101,7 +102,7 @@ race.dat <- read_csv(file="data/output/wru-nppes.csv") %>%
   select(lastname=surname, firstname=first, zip, county, state, white=white_name, 
          black=black_name, hispanic=hisp_name, asian=asian_name, other=other_name) %>%
   group_by(lastname, firstname) %>% 
-  mutate(case_obs=n()) %>%
+  mutate(case_obs=row_number()) %>%
   filter(case_obs==1) %>%
   select(-case_obs) %>%
   ungroup()
@@ -115,7 +116,7 @@ npi.race <- npi.data %>% filter(lastname!="") %>%
       black == pmax(other, asian, black, white, hispanic) ~ "black",
       white == pmax(other, asian, black, white, hispanic) ~ "white",
       hispanic == pmax(other, asian, black, white, hispanic) ~ "hispanic",
-      TRUE ~ NA_real_
+      TRUE ~ NA_character_
     ),
     pred_race = case_when(
       max_race == "other"    ~ other,
@@ -139,7 +140,7 @@ race.dat <- read_csv(file="data/output/wru-nppes.csv") %>%
   select(lastname=surname, firstname=first, zip, county, state, white=white_namegeo, 
          black=black_namegeo, hispanic=hisp_namegeo, asian=asian_namegeo, other=other_namegeo) %>%
   group_by(lastname, firstname, zip, state) %>% 
-  mutate(case_obs=n()) %>%
+  mutate(case_obs=row_number()) %>%
   filter(case_obs==1) %>%
   select(-case_obs) %>%
   ungroup()
@@ -153,7 +154,7 @@ npi.race <- npi.data %>% filter(lastname!="") %>%
       black == pmax(other, asian, black, white, hispanic) ~ "black",
       white == pmax(other, asian, black, white, hispanic) ~ "white",
       hispanic == pmax(other, asian, black, white, hispanic) ~ "hispanic",
-      TRUE ~ NA_real_      
+      TRUE ~ NA_character_     
     ),
     pred_race = case_when(
       max_race == "other"    ~ other,
@@ -185,14 +186,15 @@ race.dat <- read_csv(file="data/output/nameprism-mdppas.csv",
   filter(!is.na(white)) %>%
   mutate(across(c("two_race","hispanic","api","black","asian","white"), as.numeric)) %>%
   group_by(lastname, firstname) %>% 
-  mutate(case_obs=n()) %>%
+  mutate(case_obs=row_number()) %>%
   filter(case_obs==1) %>%
   select(-case_obs) %>%
   ungroup()
 
 npi.race <- npi.data %>% filter(lastname!="") %>%
   left_join(race.dat, by=c("lastname","firstname")) %>%
-  mutate(other=api+two_race) %>%
+  mutate(other=two_race,
+         asian=asian+api) %>%
   select(npi, lastname, firstname, hispanic, black, asian, white, other) %>%
   mutate(
     max_race = case_when(
@@ -201,7 +203,7 @@ npi.race <- npi.data %>% filter(lastname!="") %>%
       black == pmax(other, asian, black, white, hispanic) ~ "black",
       white == pmax(other, asian, black, white, hispanic) ~ "white",
       hispanic == pmax(other, asian, black, white, hispanic) ~ "hispanic",
-      TRUE ~ NA_real_      
+      TRUE ~ NA_character_      
     ),
     pred_race = case_when(
       max_race == "other"    ~ other,
@@ -224,7 +226,7 @@ race.dat <- read_csv(file="data/output/wru-mdppas.csv") %>%
   select(lastname=surname, firstname=first, zip, county, state, white=white_name, 
          black=black_name, hispanic=hisp_name, asian=asian_name, other=other_name) %>%
   group_by(lastname, firstname) %>% 
-  mutate(case_obs=n()) %>%
+  mutate(case_obs=row_number()) %>%
   filter(case_obs==1) %>%
   select(-case_obs) %>%
   ungroup()
@@ -238,7 +240,7 @@ npi.race <- npi.data %>% filter(lastname!="") %>%
       black == pmax(other, asian, black, white, hispanic) ~ "black",
       white == pmax(other, asian, black, white, hispanic) ~ "white",
       hispanic == pmax(other, asian, black, white, hispanic) ~ "hispanic",
-      TRUE ~ NA_real_      
+      TRUE ~ NA_character_    
     ),
     pred_race = case_when(
       max_race == "other"    ~ other,
@@ -262,7 +264,7 @@ race.dat <- read_csv(file="data/output/wru-mdppas.csv") %>%
          black=black_namegeo, hispanic=hisp_namegeo, asian=asian_namegeo, other=other_namegeo) %>%
   mutate(zip=as.numeric(zip)) %>%
   group_by(lastname, firstname, zip) %>% 
-  mutate(case_obs=n()) %>%
+  mutate(case_obs=row_number()) %>%
   filter(case_obs==1) %>%
   select(-case_obs) %>%
   ungroup()
@@ -276,7 +278,7 @@ npi.race <- npi.data %>% filter(lastname!="") %>%
       black == pmax(other, asian, black, white, hispanic) ~ "black",
       white == pmax(other, asian, black, white, hispanic) ~ "white",
       hispanic == pmax(other, asian, black, white, hispanic) ~ "hispanic",
-      TRUE ~ NA_real_      
+      TRUE ~ NA_character_
     ),
     pred_race = case_when(
       max_race == "other"    ~ other,
@@ -298,12 +300,12 @@ np.mdppas <- read_csv('data/output/final-mdppas-nameprism.csv') %>% distinct(npi
 np.nppes <- read_csv('data/output/final-nppes-nameprism.csv') %>% distinct(npi, .keep_all=TRUE)
 wru.mdppas <- read_csv('data/output/final-mdppas-wru.csv') %>% distinct(npi, .keep_all=TRUE)
 wru.nppes <- read_csv('data/output/final-nppes-wru.csv') %>% distinct(npi, .keep_all=TRUE)
+zocdoc <- read_csv('data/output/final-zocdoc.csv') %>% distinct(npi, .keep_all=TRUE) %>% mutate(npi=as.numeric(npi))
 wrugeo.mdppas <- read_csv('data/output/final-mdppas-wrugeo.csv') %>% distinct(npi, .keep_all=TRUE)
 wrugeo.nppes <- read_csv('data/output/final-nppes-wrugeo.csv') %>% distinct(npi, .keep_all=TRUE)
-zocdoc <- read_csv('data/output/final-zocdoc.csv') %>% distinct(npi, .keep_all=TRUE) %>% mutate(npi=as.numeric(npi))
 
-datasets <- list(np_mdppas=np.mdppas, np_nppes=np.nppes, wru_mdppas=wru.mdppas, wru_nppes=wru.nppes,
-                 wrugeo_mdppas=wrugeo.mdppas, wrugeo_nppes=wrugeo.nppes, zocdoc=zocdoc)
+datasets <- list(np_mdppas=np.mdppas, np_nppes=np.nppes, wru_mdppas=wru.mdppas, wru_nppes=wru.nppes, zocdoc=zocdoc)
+name_datasets <- list(np_mdppas=np.mdppas, np_nppes=np.nppes, wru_mdppas=wru.mdppas, wru_nppes=wru.nppes)
 
 # Race variables to rename (excluding key merging variable, npi in this case)
 race.rename <- c("other", "asian", "black", "white", "hispanic", "max_race", "pred_race") 
@@ -326,12 +328,25 @@ unique.docs <- datasets %>%
   map_df(~ select(.x, npi) %>% distinct()) %>%  # Get unique values from each dataset
   distinct(npi) 
 
+# Names tied to each NPI
+unique.names <- name_datasets %>%
+  map_df(~ select(.x, npi, firstname, lastname) %>% distinct()) %>%
+  distinct() %>%
+  mutate(firstname=tolower(firstname), lastname=tolower(lastname))
+
+# State of practice (for merging with Florida voter file)
+state.dat <- wrugeo.mdppas %>% 
+  select(npi, state) %>%
+  distinct() %>%
+  mutate(state=tolower(state))
+
 final.race <- unique.docs %>% 
               left_join(merged.race, by=c("npi")) %>%
-              left_join(zocdoc %>% select(npi, zocdoc_race=ethnicity) %>% filter(!is.na(npi)), by=c("npi"))
+              left_join(unique.names, by=c("npi")) %>%
+              left_join(state.dat, by=c("npi")) %>%
+              left_join(zocdoc %>% select(npi, zocdoc_race=dominant_race) %>% filter(!is.na(npi)), by=c("npi"))
 
-max.race <- paste0("max_race_", c("np_mdppas", "np_nppes","wru_mdppas","wru_nppes","wrugeo_mdppas",
-                                       "wrugeo_nppes","zocdoc"))
+max.race <- paste0("max_race_", c("np_mdppas", "np_nppes","wru_mdppas","wru_nppes","zocdoc"))
 
 # Compute predicted_race and race_agreement_share
 final.race <- final.race %>%
@@ -360,7 +375,7 @@ final.race <- final.race %>%
       TRUE ~ NA_real_  # Default to 0 if common_pred is missing
     )
   ) %>%
-  select(npi, starts_with("max_race_"), starts_with("pred_race_"), common_pred, share_pred, zocdoc_race) %>%
+  select(npi, firstname, lastname, state, starts_with("max_race_"), starts_with("pred_race_"), common_pred, share_pred, zocdoc_race) %>%
   rename_with(~ str_remove(., "^max_race_"), starts_with("max_race_")) %>%
   rename_with(~ str_replace(., "^pred_race_","pred_"), starts_with("pred_race_"))
 
