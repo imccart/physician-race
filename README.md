@@ -1,5 +1,8 @@
 # Physician Race
 
+## TODO
+- [ ] `_main.R` line 21 hardcodes old NPPES filename (`npidata_pfile_20050523-20200809.csv`). Update to use `list.files()` pattern matching (see `hc-atlas/code/1-nppes.R` for example), then delete the old 2020 file from `research-data/NPPES/`. Feb 2026 NPPES is now available there.
+
 This repo contains the code for different race predictions for physicians, organized into data (input and output) and data-code. The raw data, code, and output are described in more detail below:
 
 ## Raw Data
